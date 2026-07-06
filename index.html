@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日 5 个英语单词</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    padding: 24px 16px;
+    min-height: 100vh;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header h1 {
+    font-size: 1.6rem;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+  }
+  .header .date {
+    font-size: 0.85rem;
+    color: #8892a6;
+  }
+  .cards {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-left: 5px solid #4a6cf7;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .word-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .word {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  .phonetic {
+    font-size: 0.95rem;
+    color: #6b7280;
+    font-style: italic;
+  }
+  .speak-btn {
+    background: #4a6cf7;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .speak-btn:hover {
+    background: #3451d6;
+    transform: scale(1.1);
+  }
+  .speak-btn:active {
+    transform: scale(0.95);
+  }
+  .speak-btn.playing {
+    background: #f59e0b;
+    animation: pulse 0.8s ease infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  .pos {
+    font-size: 0.8rem;
+    color: #8892a6;
+    margin-bottom: 10px;
+  }
+  .meaning {
+    font-size: 1rem;
+    color: #374151;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .example {
+    background: #f0f4ff;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .example .en {
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    margin-bottom: 4px;
+  }
+  .example .cn {
+    font-size: 0.88rem;
+    color: #6b7280;
+  }
+  .example .speak-sm {
+    background: none;
+    border: 1px solid #4a6cf7;
+    color: #4a6cf7;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-left: 6px;
+    vertical-align: middle;
+    transition: all 0.2s;
+  }
+  .example .speak-sm:hover {
+    background: #4a6cf7;
+    color: #fff;
+  }
+  .tip {
+    font-size: 0.88rem;
+    color: #7c3aed;
+    background: #faf5ff;
+    border-radius: 8px;
+    padding: 10px 14px;
+    line-height: 1.6;
+  }
+  .tip strong { color: #6d28d9; }
+  .footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 0.82rem;
+    color: #8892a6;
+  }
+  .controls {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .play-all-btn {
+    background: #10b981;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 28px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .play-all-btn:hover {
+    background: #059669;
+    transform: translateY(-1px);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📖 每日 5 个英语单词</h1>
+  <div class="date">2026年7月6日 · 星期一</div>
+</div>
+
+<div class="controls">
+  <button class="play-all-btn" onclick="playAll()">🔊 依次朗读全部单词</button>
+</div>
+
+<div class="cards">
+
+  <!-- Word 1 -->
+  <div class="card">
+    <div class="word-row">
+      <button class="speak-btn" onclick="speak('leverage')">🔊</button>
+      <span class="word">leverage</span>
+      <span class="phonetic">/ˈlevərɪdʒ/</span>
+    </div>
+    <div class="pos">v. / n. 利用；杠杆作用</div>
+    <div class="meaning">充分利用已有的资源、优势或工具来达到更大效果；也指杠杆原理。</div>
+    <div class="example">
+      <div class="en">We should <strong>leverage</strong> our existing user base to launch the new feature.<button class="speak-sm" onclick="speak('We should leverage our existing user base to launch the new feature.')">朗读</button></div>
+      <div class="cn">我们应该利用现有的用户基础来发布新功能。</div>
+    </div>
+    <div class="tip">💡 <strong>记忆：</strong>"lever"（杠杆）+ "age" → 用杠杆撬动重物，比喻<strong>借力打力</strong>。职场上常说要 leverage resources（善用资源）。</div>
+  </div>
+
+  <!-- Word 2 -->
+  <div class="card">
+    <div class="word-row">
+      <button class="speak-btn" onclick="speak('ambiguous')">🔊</button>
+      <span class="word">ambiguous</span>
+      <span class="phonetic">/æmˈbɪɡjuəs/</span>
+    </div>
+    <div class="pos">adj. 模糊的；有歧义的</div>
+    <div class="meaning">可以有多种理解方式的，不够明确、容易产生歧义的。</div>
+    <div class="example">
+      <div class="en">The requirements were too <strong>ambiguous</strong> for the team to start coding.<button class="speak-sm" onclick="speak('The requirements were too ambiguous for the team to start coding.')">朗读</button></div>
+      <div class="cn">需求太模糊了，团队没法开始写代码。</div>
+    </div>
+    <div class="tip">💡 <strong>记忆：</strong>"ambi-"（两边）+ "guous" → 两边都能解释 → <strong>模棱两可</strong>。和它相反的是 "unambiguous"（明确的）。</div>
+  </div>
+
+  <!-- Word 3 -->
+  <div class="card">
+    <div class="word-row">
+      <button class="speak-btn" onclick="speak('facilitate')">🔊</button>
+      <span class="word">facilitate</span>
+      <span class="phonetic">/fəˈsɪlɪteɪt/</span>
+    </div>
+    <div class="pos">v. 促进；使便利</div>
+    <div class="meaning">使某个过程更容易、更顺畅地进行；推动事情的进展。</div>
+    <div class="example">
+      <div class="en">The new tool will <strong>facilitate</strong> communication between remote teams.<button class="speak-sm" onclick="speak('The new tool will facilitate communication between remote teams.')">朗读</button></div>
+      <div class="cn">这个新工具将促进远程团队之间的沟通。</div>
+    </div>
+    <div class="tip">💡 <strong>记忆：</strong>"facile"（容易的）+ "itate" → 让事情变得<strong>更容易</strong>。PM 经常说 "facilitate the discussion"（推动讨论）。</div>
+  </div>
+
+  <!-- Word 4 -->
+  <div class="card">
+    <div class="word-row">
+      <button class="speak-btn" onclick="speak('consensus')">🔊</button>
+      <span class="word">consensus</span>
+      <span class="phonetic">/kənˈsensəs/</span>
+    </div>
+    <div class="pos">n. 共识；一致意见</div>
+    <div class="meaning">群体中大多数成员达成的一致看法或决定。</div>
+    <div class="example">
+      <div class="en">After a long discussion, the team finally reached a <strong>consensus</strong> on the design direction.<button class="speak-sm" onclick="speak('After a long discussion, the team finally reached a consensus on the design direction.')">朗读</button></div>
+      <div class="cn">经过长时间讨论，团队终于就设计方向达成了共识。</div>
+    </div>
+    <div class="tip">💡 <strong>记忆：</strong>"con"（共同）+ "sens"（感觉）→ 大家有<strong>共同的感觉</strong> → 达成共识。"sense" 就是同词根。</div>
+  </div>
+
+  <!-- Word 5 -->
+  <div class="card">
+    <div class="word-row">
+      <button class="speak-btn" onclick="speak('substantial')">🔊</button>
+      <span class="word">substantial</span>
+      <span class="phonetic">/səbˈstænʃəl/</span>
+    </div>
+    <div class="pos">adj. 大量的；实质的；坚固的</div>
+    <div class="meaning">数量可观的、有实质内容的；也可以指坚固结实的。</div>
+    <div class="example">
+      <div class="en">We've made <strong>substantial</strong> progress on the project this quarter.<button class="speak-sm" onclick="speak('We have made substantial progress on the project this quarter.')">朗读</button></div>
+      <div class="cn">本季度我们在项目上取得了实质性进展。</div>
+    </div>
+    <div class="tip">💡 <strong>记忆：</strong>"substance"（物质/实质）+ "ial" → 有实质内容的、<strong>分量足的</strong>。汇报工作说 "substantial progress" 比说 "big progress" 专业多了。</div>
+  </div>
+
+</div>
+
+<div class="footer">点击 🔊 按钮听发音 · 点"朗读"听完整例句</div>
+
+<script>
+  // 语音合成
+  const synth = window.speechSynthesis;
+  let voices = [];
+  let enVoice = null;
+
+  function loadVoices() {
+    voices = synth.getVoices();
+    // 优先选英式或美式英语 voice
+    enVoice = voices.find(v => v.lang === 'en-US' && /Google|Samantha|Daniel|Karen/i.test(v.name))
+           || voices.find(v => v.lang === 'en-US')
+           || voices.find(v => v.lang.startsWith('en'))
+           || null;
+  }
+  loadVoices();
+  if (synth.onvoiceschanged !== undefined) {
+    synth.onvoiceschanged = loadVoices;
+  }
+
+  function speak(text, btn) {
+    synth.cancel(); // 停止上一个
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = 0.9;
+    utter.pitch = 1;
+    if (enVoice) utter.voice = enVoice;
+
+    // 找到对应的圆形按钮加动画
+    const allBtns = document.querySelectorAll('.speak-btn');
+    allBtns.forEach(b => b.classList.remove('playing'));
+
+    if (btn) {
+      btn.classList.add('playing');
+    } else {
+      // 通过 onclick 属性找到触发的按钮
+      const callerBtn = event && event.currentTarget;
+      if (callerBtn && callerBtn.classList.contains('speak-btn')) {
+        callerBtn.classList.add('playing');
+      }
+    }
+
+    utter.onend = () => {
+      allBtns.forEach(b => b.classList.remove('playing'));
+    };
+    synth.speak(utter);
+  }
+
+  // 依次朗读全部单词
+  function playAll() {
+    const words = ['leverage', 'ambiguous', 'facilitate', 'consensus', 'substantial'];
+    const btns = document.querySelectorAll('.speak-btn');
+    let i = 0;
+
+    function next() {
+      if (i >= words.length) {
+        btns.forEach(b => b.classList.remove('playing'));
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(words[i]);
+      utter.lang = 'en-US';
+      utter.rate = 0.9;
+      if (enVoice) utter.voice = enVoice;
+
+      btns.forEach(b => b.classList.remove('playing'));
+      if (btns[i]) btns[i].classList.add('playing');
+
+      utter.onend = () => {
+        i++;
+        setTimeout(next, 400);
+      };
+      synth.speak(utter);
+    }
+    synth.cancel();
+    next();
+  }
+</script>
+
+</body>
+</html>
