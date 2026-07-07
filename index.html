@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- build: 2026-07-07-v1 -->
+<!-- build: 2026-07-07-v3 (history) -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>每日 5 个英语单词</title>
@@ -27,6 +27,28 @@
     font-size: 0.85rem;
     color: #8892a6;
   }
+  .controls {
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .play-all-btn { background: #10b981; color: #fff; }
+  .play-all-btn:hover { background: #059669; transform: translateY(-1px); }
+  .toggle-history-btn { background: #8b5cf6; color: #fff; }
+  .toggle-history-btn:hover { background: #7c3aed; transform: translateY(-1px); }
+
   .cards {
     max-width: 720px;
     margin: 0 auto;
@@ -42,9 +64,7 @@
     border-left: 5px solid #4a6cf7;
     transition: box-shadow 0.2s;
   }
-  .card:hover {
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
   .word-row {
     display: flex;
     align-items: center;
@@ -77,13 +97,8 @@
     transition: all 0.2s;
     flex-shrink: 0;
   }
-  .speak-btn:hover {
-    background: #3451d6;
-    transform: scale(1.1);
-  }
-  .speak-btn:active {
-    transform: scale(0.95);
-  }
+  .speak-btn:hover { background: #3451d6; transform: scale(1.1); }
+  .speak-btn:active { transform: scale(0.95); }
   .speak-btn.playing {
     background: #f59e0b;
     animation: pulse 0.8s ease infinite;
@@ -110,15 +125,8 @@
     margin-bottom: 12px;
     line-height: 1.6;
   }
-  .example .en {
-    font-size: 0.95rem;
-    color: #1a1a2e;
-    margin-bottom: 4px;
-  }
-  .example .cn {
-    font-size: 0.88rem;
-    color: #6b7280;
-  }
+  .example .en { font-size: 0.95rem; color: #1a1a2e; margin-bottom: 4px; }
+  .example .cn { font-size: 0.88rem; color: #6b7280; }
   .example .speak-sm {
     background: none;
     border: 1px solid #4a6cf7;
@@ -131,10 +139,7 @@
     vertical-align: middle;
     transition: all 0.2s;
   }
-  .example .speak-sm:hover {
-    background: #4a6cf7;
-    color: #fff;
-  }
+  .example .speak-sm:hover { background: #4a6cf7; color: #fff; }
   .tip {
     font-size: 0.88rem;
     color: #7c3aed;
@@ -144,29 +149,121 @@
     line-height: 1.6;
   }
   .tip strong { color: #6d28d9; }
+
+  /* ---- History Section ---- */
+  .history-section {
+    max-width: 720px;
+    margin: 32px auto 0;
+    display: none;
+  }
+  .history-section.open { display: block; }
+  .history-header {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .history-header h2 {
+    font-size: 1.2rem;
+    color: #5b21b6;
+  }
+  .history-header .sub {
+    font-size: 0.8rem;
+    color: #a78bfa;
+    margin-top: 4px;
+  }
+  .history-list { display: flex; flex-direction: column; gap: 10px; }
+  .history-day {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+  .history-day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    cursor: pointer;
+    background: #faf5ff;
+    border-bottom: 1px solid #ede9fe;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .history-day-header:hover { background: #f3e8ff; }
+  .history-day-header .day-label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #5b21b6;
+  }
+  .history-day-header .day-date {
+    font-size: 0.78rem;
+    color: #a78bfa;
+  }
+  .history-day-header .arrow {
+    font-size: 0.85rem;
+    color: #a78bfa;
+    transition: transform 0.2s;
+  }
+  .history-day.open .history-day-header .arrow { transform: rotate(180deg); }
+  .history-day-body {
+    display: none;
+    padding: 12px 18px 16px;
+  }
+  .history-day.open .history-day-body { display: block; }
+  .history-word {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f3f4f6;
+    flex-wrap: wrap;
+  }
+  .history-word:last-child { border-bottom: none; }
+  .history-word .hw-word {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #1a1a2e;
+    min-width: 100px;
+  }
+  .history-word .hw-phonetic {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-style: italic;
+  }
+  .history-word .hw-pos {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    background: #f3f4f6;
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .history-word .hw-meaning { font-size: 0.88rem; color: #4b5563; flex: 1; }
+  .history-word .hw-tip {
+    font-size: 0.78rem;
+    color: #8b5cf6;
+    background: #faf5ff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .history-word .hw-speak {
+    background: none;
+    border: 1px solid #c4b5fd;
+    color: #7c3aed;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .history-word .hw-speak:hover { background: #7c3aed; color: #fff; }
+
   .footer {
     text-align: center;
     margin-top: 28px;
     font-size: 0.82rem;
     color: #8892a6;
-  }
-  .controls {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .play-all-btn {
-    background: #10b981;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 28px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .play-all-btn:hover {
-    background: #059669;
-    transform: translateY(-1px);
   }
 </style>
 </head>
@@ -174,174 +271,219 @@
 
 <div class="header">
   <h1>📖 每日 5 个英语单词</h1>
-  <div class="date">2026年7月7日 · 星期二</div>
+  <div class="date" id="today-date"></div>
 </div>
 
 <div class="controls">
-  <button class="play-all-btn" onclick="playAll()">🔊 依次朗读全部单词</button>
+  <button class="btn play-all-btn" onclick="playAll()">🔊 依次朗读全部</button>
+  <button class="btn toggle-history-btn" onclick="toggleHistory()">📋 历史记录</button>
 </div>
 
-<div class="cards">
+<div class="cards" id="today-cards"></div>
 
-  <!-- Word 1 -->
-  <div class="card">
-    <div class="word-row">
-      <button class="speak-btn" onclick="speak('collaborate')">🔊</button>
-      <span class="word">collaborate</span>
-      <span class="phonetic">/kəˈlæbəreɪt/</span>
-    </div>
-    <div class="pos">v. 合作；协作</div>
-    <div class="meaning">与他人一起工作以共同完成某个目标或项目，强调团队合作。</div>
-    <div class="example">
-      <div class="en">Our team will <strong>collaborate</strong> with the marketing department on the new campaign.<button class="speak-sm" onclick="speak('Our team will collaborate with the marketing department on the new campaign.')">朗读</button></div>
-      <div class="cn">我们团队将和市场部合作开展新活动。</div>
-    </div>
-    <div class="tip">💡 <strong>记忆：</strong>"col"（一起）+ "labor"（劳动）+ "ate" → <strong>一起劳动</strong>就是合作。职场上比 "work together" 更正式、更专业。</div>
+<div class="history-section" id="history-section">
+  <div class="history-header">
+    <h2>📚 历史单词（近30天）</h2>
+    <div class="sub">共 <span id="history-count">0</span> 天 · 点击日期展开</div>
   </div>
-
-  <!-- Word 2 -->
-  <div class="card">
-    <div class="word-row">
-      <button class="speak-btn" onclick="speak('proactive')">🔊</button>
-      <span class="word">proactive</span>
-      <span class="phonetic">/proʊˈæktɪv/</span>
-    </div>
-    <div class="pos">adj. 积极主动的；先发制人的</div>
-    <div class="meaning">不等事情发生才反应，而是提前采取行动。职场上非常受推崇的品质。</div>
-    <div class="example">
-      <div class="en">A <strong>proactive</strong> employee identifies problems before they become serious.<button class="speak-sm" onclick="speak('A proactive employee identifies problems before they become serious.')">朗读</button></div>
-      <div class="cn">积极主动的员工会在问题变严重之前就发现它。</div>
-    </div>
-    <div class="tip">💡 <strong>记忆：</strong>"pro"（向前）+ "active"（行动）→ <strong>提前行动</strong>。和 "reactive"（被动反应的）是反义词。面试时说 "I'm proactive" 绝对是加分项。</div>
-  </div>
-
-  <!-- Word 3 -->
-  <div class="card">
-    <div class="word-row">
-      <button class="speak-btn" onclick="speak('prioritize')">🔊</button>
-      <span class="word">prioritize</span>
-      <span class="phonetic">/praɪˈɔːrətaɪz/</span>
-    </div>
-    <div class="pos">v. 优先处理；按优先级排序</div>
-    <div class="meaning">根据重要性排列任务或事项的顺序，把最重要的放在前面。</div>
-    <div class="example">
-      <div class="en">With so many deadlines, I need to <strong>prioritize</strong> the most urgent tasks first.<button class="speak-sm" onclick="speak('With so many deadlines, I need to prioritize the most urgent tasks first.')">朗读</button></div>
-      <div class="cn">截止日期这么多，我需要先处理最紧急的任务。</div>
-    </div>
-    <div class="tip">💡 <strong>记忆：</strong>"priority"（优先级）+ "ize"（动词后缀）→ <strong>定优先级</strong>。工作中天天要说 "prioritize tasks"（排任务优先级），比说 "do important things first" 地道多了。</div>
-  </div>
-
-  <!-- Word 4 -->
-  <div class="card">
-    <div class="word-row">
-      <button class="speak-btn" onclick="speak('concise')">🔊</button>
-      <span class="word">concise</span>
-      <span class="phonetic">/kənˈsaɪs/</span>
-    </div>
-    <div class="pos">adj. 简洁的；简明的</div>
-    <div class="meaning">用最少的话表达清楚意思，不啰嗦、不冗长。</div>
-    <div class="example">
-      <div class="en">Please keep your report <strong>concise</strong> — no more than two pages.<button class="speak-sm" onclick="speak('Please keep your report concise, no more than two pages.')">朗读</button></div>
-      <div class="cn">请保持报告简洁——不要超过两页。</div>
-    </div>
-    <div class="tip">💡 <strong>记忆：</strong>"con"（一起）+ "cise"（切）→ 把多余的部分<strong>一起切掉</strong>，留下精华。写邮件、做汇报，老板都喜欢 concise 的表达。</div>
-  </div>
-
-  <!-- Word 5 -->
-  <div class="card">
-    <div class="word-row">
-      <button class="speak-btn" onclick="speak('negotiate')">🔊</button>
-      <span class="word">negotiate</span>
-      <span class="phonetic">/nɪˈɡoʊʃieɪt/</span>
-    </div>
-    <div class="pos">v. 谈判；协商</div>
-    <div class="meaning">通过讨论和让步来达成协议。不仅用于商务谈判，日常协调也常用。</div>
-    <div class="example">
-      <div class="en">She managed to <strong>negotiate</strong> a flexible working schedule with her manager.<button class="speak-sm" onclick="speak('She managed to negotiate a flexible working schedule with her manager.')">朗读</button></div>
-      <div class="cn">她成功和经理协商到了弹性工作时间。</div>
-    </div>
-    <div class="tip">💡 <strong>记忆：</strong>谐音「你勾睡A特」→ 谈判桌上<strong>你勾</strong>一个条件，对方<strong>睡</strong>不着觉地考虑，最后定个<strong>A特</strong>方案。不只谈大生意，跟老板 negotiate 加薪也是这个词。</div>
-  </div>
-
+  <div class="history-list" id="history-list"></div>
 </div>
 
-<div class="footer">点击 🔊 按钮听发音 · 点"朗读"听完整例句</div>
+<div class="footer">点击 🔊 按钮听发音 · 点"朗读"听完整例句 · 历史记录保留最近30天</div>
 
-<script>
-  // 语音合成
-  const synth = window.speechSynthesis;
-  let voices = [];
-  let enVoice = null;
-
-  function loadVoices() {
-    voices = synth.getVoices();
-    // 优先选英式或美式英语 voice
-    enVoice = voices.find(v => v.lang === 'en-US' && /Google|Samantha|Daniel|Karen/i.test(v.name))
-           || voices.find(v => v.lang === 'en-US')
-           || voices.find(v => v.lang.startsWith('en'))
-           || null;
-  }
-  loadVoices();
-  if (synth.onvoiceschanged !== undefined) {
-    synth.onvoiceschanged = loadVoices;
-  }
-
-  function speak(text, btn) {
-    synth.cancel(); // 停止上一个
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'en-US';
-    utter.rate = 0.9;
-    utter.pitch = 1;
-    if (enVoice) utter.voice = enVoice;
-
-    // 找到对应的圆形按钮加动画
-    const allBtns = document.querySelectorAll('.speak-btn');
-    allBtns.forEach(b => b.classList.remove('playing'));
-
-    if (btn) {
-      btn.classList.add('playing');
-    } else {
-      // 通过 onclick 属性找到触发的按钮
-      const callerBtn = event && event.currentTarget;
-      if (callerBtn && callerBtn.classList.contains('speak-btn')) {
-        callerBtn.classList.add('playing');
+<!-- ====== DATA ====== -->
+<script type="application/json" id="word-data">
+{
+  "today": {
+    "date": "2026-07-07",
+    "weekday": "星期二",
+    "words": [
+      {
+        "word": "collaborate",
+        "phonetic": "/kəˈlæbəreɪt/",
+        "pos": "v.",
+        "meaning": "与他人一起工作以共同完成某个目标或项目，强调团队合作。",
+        "meaning_short": "合作；协作",
+        "example_en": "Our team will <strong>collaborate</strong> with the marketing department on the new campaign.",
+        "example_cn": "我们团队将和市场部合作开展新活动。",
+        "tip": "\"col\"（一起）+ \"labor\"（劳动）+ \"ate\" → <strong>一起劳动</strong>就是合作。职场上比 \"work together\" 更正式、更专业。",
+        "tip_short": "一起劳动"
+      },
+      {
+        "word": "proactive",
+        "phonetic": "/proʊˈæktɪv/",
+        "pos": "adj.",
+        "meaning": "不等事情发生才反应，而是提前采取行动。职场上非常受推崇的品质。",
+        "meaning_short": "积极主动的",
+        "example_en": "A <strong>proactive</strong> employee identifies problems before they become serious.",
+        "example_cn": "积极主动的员工会在问题变严重之前就发现它。",
+        "tip": "\"pro\"（向前）+ \"active\"（行动）→ <strong>提前行动</strong>。和 \"reactive\"（被动反应的）是反义词。",
+        "tip_short": "提前行动"
+      },
+      {
+        "word": "prioritize",
+        "phonetic": "/praɪˈɔːrətaɪz/",
+        "pos": "v.",
+        "meaning": "根据重要性排列任务或事项的顺序，把最重要的放在前面。",
+        "meaning_short": "优先处理",
+        "example_en": "With so many deadlines, I need to <strong>prioritize</strong> the most urgent tasks first.",
+        "example_cn": "截止日期这么多，我需要先处理最紧急的任务。",
+        "tip": "\"priority\"（优先级）+ \"ize\"（动词后缀）→ <strong>定优先级</strong>。比说 \"do important things first\" 地道多了。",
+        "tip_short": "定优先级"
+      },
+      {
+        "word": "concise",
+        "phonetic": "/kənˈsaɪs/",
+        "pos": "adj.",
+        "meaning": "用最少的话表达清楚意思，不啰嗦、不冗长。",
+        "meaning_short": "简洁的",
+        "example_en": "Please keep your report <strong>concise</strong> — no more than two pages.",
+        "example_cn": "请保持报告简洁——不要超过两页。",
+        "tip": "\"con\"（一起）+ \"cise\"（切）→ 把多余的<strong>一起切掉</strong>，留下精华。",
+        "tip_short": "一起切掉多余的"
+      },
+      {
+        "word": "negotiate",
+        "phonetic": "/nɪˈɡoʊʃieɪt/",
+        "pos": "v.",
+        "meaning": "通过讨论和让步来达成协议。不仅用于商务谈判，日常协调也常用。",
+        "meaning_short": "谈判；协商",
+        "example_en": "She managed to <strong>negotiate</strong> a flexible working schedule with her manager.",
+        "example_cn": "她成功和经理协商到了弹性工作时间。",
+        "tip": "谐音「你勾睡A特」→ 谈判桌上<strong>你勾</strong>一个条件，对方<strong>睡</strong>不着觉地考虑，最后定个<strong>A特</strong>方案。",
+        "tip_short": "你勾我谈"
       }
+    ]
+  },
+  "history": [
+    {
+      "date": "2026-07-06",
+      "weekday": "星期一",
+      "words": [
+        { "word": "leverage", "phonetic": "/ˈlevərɪdʒ/", "pos": "v./n.", "meaning_short": "利用；杠杆作用", "tip_short": "借力打力" },
+        { "word": "ambiguous", "phonetic": "/æmˈbɪɡjuəs/", "pos": "adj.", "meaning_short": "模糊的；有歧义的", "tip_short": "模棱两可" },
+        { "word": "facilitate", "phonetic": "/fəˈsɪlɪteɪt/", "pos": "v.", "meaning_short": "促进；使便利", "tip_short": "让事情更容易" },
+        { "word": "consensus", "phonetic": "/kənˈsensəs/", "pos": "n.", "meaning_short": "共识；一致意见", "tip_short": "共同的感觉" },
+        { "word": "substantial", "phonetic": "/səbˈstænʃəl/", "pos": "adj.", "meaning_short": "大量的；实质的", "tip_short": "分量足的" }
+      ]
     }
+  ]
+}
+</script>
 
-    utter.onend = () => {
-      allBtns.forEach(b => b.classList.remove('playing'));
-    };
+<!-- ====== JS ====== -->
+<script>
+// ====== SPEECH ======
+const synth = window.speechSynthesis;
+let enVoice = null;
+function loadVoices() {
+  const voices = synth.getVoices();
+  enVoice = voices.find(v => v.lang === 'en-US' && /Google|Samantha|Daniel|Karen/i.test(v.name))
+         || voices.find(v => v.lang === 'en-US')
+         || voices.find(v => v.lang.startsWith('en'))
+         || null;
+}
+loadVoices();
+if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+
+function speak(text) {
+  synth.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US'; utter.rate = 0.9; utter.pitch = 1;
+  if (enVoice) utter.voice = enVoice;
+  document.querySelectorAll('.speak-btn,.hw-speak').forEach(b => b.classList.remove('playing'));
+  const caller = event && event.currentTarget;
+  if (caller) caller.classList.add('playing');
+  utter.onend = () => { if (caller) caller.classList.remove('playing'); };
+  synth.speak(utter);
+}
+
+// ====== RENDER TODAY ======
+const data = JSON.parse(document.getElementById('word-data').textContent);
+const today = data.today;
+
+document.getElementById('today-date').textContent =
+  today.date.replace(/-/g, '年').replace(/(\d+)年(\d+)年/, '$1月$2日') + ' · ' + today.weekday;
+
+const cardsEl = document.getElementById('today-cards');
+const todayWords = [];
+
+today.words.forEach((w, i) => {
+  todayWords.push(w.word);
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML =
+    '<div class="word-row">' +
+      '<button class="speak-btn" onclick="speak(\'' + w.word + '\')">🔊</button>' +
+      '<span class="word">' + w.word + '</span>' +
+      '<span class="phonetic">' + w.phonetic + '</span>' +
+    '</div>' +
+    '<div class="pos">' + w.pos + ' ' + w.meaning_short + '</div>' +
+    '<div class="meaning">' + w.meaning + '</div>' +
+    '<div class="example">' +
+      '<div class="en">' + w.example_en + '<button class="speak-sm" onclick="speak(\'' + w.example_en.replace(/<[^>]*>/g,'').replace(/"/g,'\\"') + '\')">朗读</button></div>' +
+      '<div class="cn">' + w.example_cn + '</div>' +
+    '</div>' +
+    '<div class="tip">💡 <strong>记忆：</strong>' + w.tip + '</div>';
+  cardsEl.appendChild(card);
+});
+
+// ====== RENDER HISTORY ======
+function renderHistory() {
+  const listEl = document.getElementById('history-list');
+  document.getElementById('history-count').textContent = data.history.length;
+
+  data.history.forEach(day => {
+    const dayEl = document.createElement('div');
+    dayEl.className = 'history-day';
+    let wordsHTML = '';
+    day.words.forEach(w => {
+      wordsHTML +=
+        '<div class="history-word">' +
+          '<button class="hw-speak" onclick="speak(\'' + w.word + '\')">🔊</button>' +
+          '<span class="hw-word">' + w.word + '</span>' +
+          '<span class="hw-phonetic">' + w.phonetic + '</span>' +
+          '<span class="hw-pos">' + w.pos + '</span>' +
+          '<span class="hw-meaning">' + w.meaning_short + '</span>' +
+          '<span class="hw-tip">💡 ' + w.tip_short + '</span>' +
+        '</div>';
+    });
+    dayEl.innerHTML =
+      '<div class="history-day-header" onclick="this.parentElement.classList.toggle(\'open\')">' +
+        '<span class="day-label">' + day.date.replace(/-/g,'/') + ' ' + day.weekday + ' · ' + day.words.length + '词</span>' +
+        '<span class="arrow">▼</span>' +
+      '</div>' +
+      '<div class="history-day-body">' + wordsHTML + '</div>';
+    listEl.appendChild(dayEl);
+  });
+}
+renderHistory();
+
+// ====== TOGGLE HISTORY ======
+function toggleHistory() {
+  const section = document.getElementById('history-section');
+  const btn = document.querySelector('.toggle-history-btn');
+  section.classList.toggle('open');
+  btn.textContent = section.classList.contains('open') ? '📋 收起历史' : '📋 历史记录';
+}
+
+// ====== PLAY ALL ======
+function playAll() {
+  const btns = document.querySelectorAll('#today-cards .speak-btn');
+  let i = 0;
+  synth.cancel();
+  function next() {
+    if (i >= todayWords.length) { btns.forEach(b => b.classList.remove('playing')); return; }
+    const utter = new SpeechSynthesisUtterance(todayWords[i]);
+    utter.lang = 'en-US'; utter.rate = 0.9;
+    if (enVoice) utter.voice = enVoice;
+    btns.forEach(b => b.classList.remove('playing'));
+    if (btns[i]) btns[i].classList.add('playing');
+    utter.onend = () => { i++; setTimeout(next, 400); };
     synth.speak(utter);
   }
-
-  // 依次朗读全部单词
-  function playAll() {
-    const words = ['collaborate', 'proactive', 'prioritize', 'concise', 'negotiate'];
-    const btns = document.querySelectorAll('.speak-btn');
-    let i = 0;
-
-    function next() {
-      if (i >= words.length) {
-        btns.forEach(b => b.classList.remove('playing'));
-        return;
-      }
-      const utter = new SpeechSynthesisUtterance(words[i]);
-      utter.lang = 'en-US';
-      utter.rate = 0.9;
-      if (enVoice) utter.voice = enVoice;
-
-      btns.forEach(b => b.classList.remove('playing'));
-      if (btns[i]) btns[i].classList.add('playing');
-
-      utter.onend = () => {
-        i++;
-        setTimeout(next, 400);
-      };
-      synth.speak(utter);
-    }
-    synth.cancel();
-    next();
-  }
+  next();
+}
 </script>
 
 </body>
