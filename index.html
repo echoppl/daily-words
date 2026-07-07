@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- build: 2026-07-07-v3 (history) -->
+<!-- build: 2026-07-07-v4 (focus) -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>每日 5 个英语单词</title>
@@ -463,8 +463,24 @@ renderHistory();
 function toggleHistory() {
   const section = document.getElementById('history-section');
   const btn = document.querySelector('.toggle-history-btn');
+  const todayCards = document.getElementById('today-cards');
+  const controls = document.querySelector('.controls');
+  const header = document.querySelector('.header');
+
   section.classList.toggle('open');
-  btn.textContent = section.classList.contains('open') ? '📋 收起历史' : '📋 历史记录';
+  const isOpen = section.classList.contains('open');
+
+  // 打开历史时隐藏今日内容，突出历史记录
+  todayCards.style.display = isOpen ? 'none' : '';
+  document.querySelector('.play-all-btn').style.display = isOpen ? 'none' : '';
+  btn.textContent = isOpen ? '📋 收起历史' : '📋 历史记录';
+
+  // 滚动到历史区域
+  if (isOpen) {
+    setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  } else {
+    setTimeout(() => header.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
 }
 
 // ====== PLAY ALL ======
