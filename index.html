@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- build: 2026-07-07-v4 (focus) -->
+<!-- build: 2026-07-07-v5 (calendar) -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>每日 5 个英语单词</title>
@@ -48,6 +48,8 @@
   .play-all-btn:hover { background: #059669; transform: translateY(-1px); }
   .toggle-history-btn { background: #8b5cf6; color: #fff; }
   .toggle-history-btn:hover { background: #7c3aed; transform: translateY(-1px); }
+  .calendar-btn { background: #f59e0b; color: #fff; text-decoration: none; }
+  .calendar-btn:hover { background: #d97706; transform: translateY(-1px); }
 
   .cards {
     max-width: 720px;
@@ -277,6 +279,7 @@
 <div class="controls">
   <button class="btn play-all-btn" onclick="playAll()">🔊 依次朗读全部</button>
   <button class="btn toggle-history-btn" onclick="toggleHistory()">📋 历史记录</button>
+  <a class="btn calendar-btn" id="calendar-link" target="_blank">📅 添加到日历</a>
 </div>
 
 <div class="cards" id="today-cards"></div>
@@ -404,6 +407,15 @@ const today = data.today;
 
 document.getElementById('today-date').textContent =
   today.date.replace(/-/g, '年').replace(/(\d+)年(\d+)年/, '$1月$2日') + ' · ' + today.weekday;
+
+// 生成 Google 日历链接（今晚9点提醒）
+const d = today.date.replace(/-/g, '') + 'T210000';
+const calUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+  '&text=' + encodeURIComponent('📖 每日英语单词') +
+  '&dates=' + d + '/' + d.replace('210000','211500') +
+  '&recur=RRULE:FREQ%3DDAILY' +
+  '&details=' + encodeURIComponent('花3分钟复习今天的5个单词：https://echoppl.github.io/daily-words');
+document.getElementById('calendar-link').href = calUrl;
 
 const cardsEl = document.getElementById('today-cards');
 const todayWords = [];
